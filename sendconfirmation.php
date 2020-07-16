@@ -146,7 +146,7 @@ function sendconfirmation_civicrm_preProcess($formName, &$form) {
 } // */
 
 function sendconfirmation_civicrm_buildForm($formName, &$form) {
-  if ($formName == 'CRM_Event_Form_Participant' && !empty($form->_id)) {
+  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment']) && !empty($form->_id))  {
     $form->addElement('checkbox',
       'send_online_receipt',
       ts('Send Confirmation using online template?'), NULL
@@ -160,26 +160,29 @@ function sendconfirmation_civicrm_buildForm($formName, &$form) {
 }
 
 function sendconfirmation_civicrm_postProcess($formName, &$form) {
-  if ($formName == 'CRM_Event_Form_Participant' && !empty($form->_submitValues['send_online_receipt']) && !empty($form->_id)) {
-    $relatedContributions = civicrm_api3('ParticipantPayment', 'get', [
-      'sequential' => 1,
-      'return' => ["contribution_id"],
-      'participant_id' => $form->_id,
-    ]);
-    if (!empty($relatedContributions['values'])) {
-      if (!empty($relatedContributions['id'])) {
-        $relatedContributionID = $relatedContributions['id'];
-      }
-      if (!empty($form->_contactId)) {
-        foreach ($relatedContributions['values'] as $val) {
-          //check if this contribution is related to the same contact.
-          $result = civicrm_api3('Contribution', 'get', [
-            'sequential' => 1,
-            'id' => $val['contribution_id'],
-            'contact_id' => $form->_contactId,
-          ]);
-          if (!empty($result['id'])) {
-            $relatedContributionID = $result['id'];
+  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment']) && !empty($form->_submitValues['send_online_receipt']) && !empty($form->_id)) {
+    $relatedContributionID = $form->_id;
+    if ($formName == 'CRM_Event_Form_Participant') {
+      $relatedContributions = civicrm_api3('ParticipantPayment', 'get', [
+        'sequential' => 1,
+        'return' => ["contribution_id"],
+        'participant_id' => $form->_id,
+      ]);
+      if (!empty($relatedContributions['values'])) {
+        if (!empty($relatedContributions['id'])) {
+          $relatedContributionID = $relatedContributions['id'];
+        }
+        if (!empty($form->_contactId)) {
+          foreach ($relatedContributions['values'] as $val) {
+            //check if this contribution is related to the same contact.
+            $result = civicrm_api3('Contribution', 'get', [
+              'sequential' => 1,
+              'id' => $val['contribution_id'],
+              'contact_id' => $form->_contactId,
+            ]);
+            if (!empty($result['id'])) {
+              $relatedContributionID = $result['id'];
+            }
           }
         }
       }
