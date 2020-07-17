@@ -146,7 +146,7 @@ function sendconfirmation_civicrm_preProcess($formName, &$form) {
 } // */
 
 function sendconfirmation_civicrm_buildForm($formName, &$form) {
-  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment']) && !empty($form->_id))  {
+  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment', 'CRM_Contribute_Form_Contribution']) && !empty($form->_id))  {
     $form->addElement('checkbox',
       'send_online_receipt',
       ts('Send Confirmation using online template?'), NULL
@@ -160,7 +160,7 @@ function sendconfirmation_civicrm_buildForm($formName, &$form) {
 }
 
 function sendconfirmation_civicrm_postProcess($formName, &$form) {
-  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment']) && !empty($form->_submitValues['send_online_receipt']) && !empty($form->_id)) {
+  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment', 'CRM_Contribute_Form_Contribution']) && !empty($form->_submitValues['send_online_receipt']) && !empty($form->_id)) {
     $relatedContributionID = $form->_id;
     if ($formName == 'CRM_Event_Form_Participant') {
       $relatedContributions = civicrm_api3('ParticipantPayment', 'get', [
