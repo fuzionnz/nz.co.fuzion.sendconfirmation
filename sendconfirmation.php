@@ -147,9 +147,18 @@ function sendconfirmation_civicrm_preProcess($formName, &$form) {
 
 function sendconfirmation_civicrm_buildForm($formName, &$form) {
   if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment', 'CRM_Contribute_Form_Contribution']) && !empty($form->_id))  {
+    if ($form->elementExists('is_email_receipt')) {
+      $element = $form->getElement('is_email_receipt');
+      if ($formName == 'CRM_Contribute_Form_AdditionalPayment') {
+        $element->_label = 'Send Receipt for this payment';
+      }
+      else {
+        $element->_label = 'Send Receipt (offline template)?';
+      }
+    }
     $form->addElement('checkbox',
       'send_online_receipt',
-      ts('Send Confirmation using online template?'), NULL
+      ts('Send full contribution receipt (online template)'), NULL
     );
     $templatePath = realpath(dirname(__FILE__)."/templates");
     // dynamically insert a template block in the page
