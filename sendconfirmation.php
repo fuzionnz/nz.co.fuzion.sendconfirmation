@@ -146,7 +146,9 @@ function sendconfirmation_civicrm_preProcess($formName, &$form) {
 } // */
 
 function sendconfirmation_civicrm_buildForm($formName, &$form) {
-  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment', 'CRM_Contribute_Form_Contribution']) && !empty($form->_id))  {
+  if (in_array($formName, ['CRM_Event_Form_Participant', 'CRM_Contribute_Form_AdditionalPayment', 'CRM_Contribute_Form_Contribution'])
+    && !empty($form->_id)
+    && in_array($form->_action, [CRM_Core_Action::ADD, CRM_Core_Action::UPDATE])) {
     if ($form->elementExists('is_email_receipt')) {
       $element = $form->getElement('is_email_receipt');
       if ($formName == 'CRM_Contribute_Form_AdditionalPayment') {
