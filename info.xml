@@ -2,7 +2,7 @@
 <extension key="nz.co.fuzion.sendconfirmation" type="module">
   <file>sendconfirmation</file>
   <name>Send email confirmation using online templates</name>
-  <description>Uses contribution => sendconfirmation api to send email receipts to users.</description>
+  <description>Uses contribution =&gt; sendconfirmation api to send email receipts to users.</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>Jitendra Purohit</author>
@@ -18,10 +18,17 @@
   <version>1.0</version>
   <develStage>alpha</develStage>
   <compatibility>
-    <ver>4.7</ver>
+    <ver>5.27</ver>
   </compatibility>
   <comments>This is a new, undeveloped module</comments>
   <civix>
     <namespace>CRM/Sendconfirmation</namespace>
+    <format>23.02.1</format>
   </civix>
+  <mixins>
+    <mixin>smarty-v2@1.0.1</mixin>
+  </mixins>
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
 </extension>
